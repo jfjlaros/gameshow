@@ -1,6 +1,5 @@
 #include <windows.h>
 #include <wingdi.h>
-#include <stdio.h>
 
 #define BACKGROUND RGB(0, 28, 28)
 
@@ -10,7 +9,7 @@ LRESULT CALLBACK WindowProcedure(HWND, UINT, WPARAM, LPARAM);
 HDC hdc;
 PAINTSTRUCT ps;
 COLORREF fontColor = BACKGROUND;
-char text[5] = "     ";
+char text[3] = "   ";
 int locked = 0,
     xOffset,
     yOffset;
@@ -51,10 +50,10 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance,
   if (!RegisterClassEx (&wincl))
     return 0;
 
-  xSize = GetSystemMetrics(SM_CXFULLSCREEN);
-  ySize = GetSystemMetrics(SM_CYFULLSCREEN);
+  xSize = GetSystemMetrics(SM_CXSCREEN);
+  ySize = GetSystemMetrics(SM_CYSCREEN);
 
-  xOffset = (xSize / 2) - (1.5 * fontW);
+  xOffset = (xSize / 2) - (1.0 * fontW);
   yOffset = (ySize / 2) - (0.5 * fontH);
   // The class is registered, let's create the program
   hwnd = CreateWindowEx(
@@ -102,9 +101,9 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance,
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, 
                                  LPARAM lParam) {
   switch (message) {      // handle the messages
-    case WM_KEYUP :
+    case WM_MOUSEMOVE :
       SetTextColor(hdc, fontColor);
-      TextOut(hdc, xOffset, yOffset, text, 5);
+      TextOut(hdc, xOffset, yOffset, text, 3);
       break;
     case WM_KEYDOWN:    // Keystroke.
       switch (wParam) { // First look at the quit and reset keys.
@@ -112,7 +111,7 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam,
           PostQuitMessage(0);
           break;
         case 0x52:      // `r' pressed.
-          text[1] = ' ';
+          text[0] = ' ';
           locked = 0;
           break;
       }//switch
@@ -123,37 +122,37 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam,
       switch (wParam) { // Now look at the rest of the keystrokes.
         case 0x5a:                        // `z' pressed.
           fontColor = RGB(255, 0, 255);   // Cyan.
-          text[1] = 'A';
+          text[0] = 'A';
           locked = 1;
           break;
         case 0x58:                        // `x' pressed.
           fontColor = RGB(0, 255, 0);     // Green.
-          text[1] = 'B';
+          text[0] = 'B';
           locked = 1;
           break;
         case 0x43:                        // `c' pressed.
           fontColor = RGB(0, 255, 255);   // Magenta.
-          text[1] = 'C';
+          text[0] = 'C';
           locked = 1;
           break;
         case 0x56:                        // `v' pressed.
           fontColor = RGB(255, 255, 0);   // Yellow.
-          text[1] = 'D';
+          text[0] = 'D';
           locked = 1;
           break;
         case 0x42:                        // `b' pressed.
           fontColor = RGB(0, 0, 255);     // Blue.
-          text[1] = 'E';
+          text[0] = 'E';
           locked = 1;
           break;
         case 0x4e:                        // `n' pressed.
           fontColor = RGB(255, 0, 0);     // Red.
-          text[1] = 'F';
+          text[0] = 'F';
           locked = 1;
           break;
         case 0x4d:                        // `m' pressed.
           fontColor = RGB(255, 255, 255); // Black.
-          text[1] = 'G';
+          text[0] = 'G';
           locked = 1;
           break;
       }//switch
