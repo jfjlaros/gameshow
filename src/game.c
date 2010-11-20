@@ -96,11 +96,13 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance,
   return messages.wParam;
 }//WinMain
 
-
 /* This function is called by the Windows function DispatchMessage() */
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, 
                                  LPARAM lParam) {
   switch (message) {      // handle the messages
+      case WM_KEYUP :
+        TextOut(hdc, xOffset, yOffset, " X   ", 5);
+        break;
       case WM_KEYDOWN:    // Keystroke.
         switch (wParam) { // First look at the quit and reset keys.
           case 0x51:      // `q' pressed.
@@ -154,7 +156,8 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam,
         }//switch
         break;
       default: // for messages that we don't deal with
-        return DefWindowProc (hwnd, message, wParam, lParam);
+        printf("%x %i\n", message, message);
+        return DefWindowProc(hwnd, message, wParam, lParam);
   }//switch
 
   return 0;
