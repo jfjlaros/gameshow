@@ -9,6 +9,8 @@ LRESULT CALLBACK WindowProcedure(HWND, UINT, WPARAM, LPARAM);
 
 HDC hdc;
 PAINTSTRUCT ps;
+COLORREF fontColor = BACKGROUND;
+char text[5] = "     ";
 int locked = 0,
     xOffset,
     yOffset;
@@ -100,64 +102,66 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance,
 LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam, 
                                  LPARAM lParam) {
   switch (message) {      // handle the messages
-      case WM_KEYUP :
-        TextOut(hdc, xOffset, yOffset, " X   ", 5);
-        break;
-      case WM_KEYDOWN:    // Keystroke.
-        switch (wParam) { // First look at the quit and reset keys.
-          case 0x51:      // `q' pressed.
-            PostQuitMessage(0);
-            break;
-          case 0x52:      // `r' pressed.
-            TextOut(hdc, xOffset, yOffset, "     ", 5);
-            locked = 0;
-            break;
-        }//switch
-
-        if (locked)
+    case WM_KEYUP :
+      SetTextColor(hdc, fontColor);
+      TextOut(hdc, xOffset, yOffset, text, 5);
+      break;
+    case WM_KEYDOWN:    // Keystroke.
+      switch (wParam) { // First look at the quit and reset keys.
+        case 0x51:      // `q' pressed.
+          PostQuitMessage(0);
           break;
+        case 0x52:      // `r' pressed.
+          text[1] = ' ';
+          locked = 0;
+          break;
+      }//switch
 
-        switch (wParam) { // Now look at the rest of the keystrokes.
-          case 0x5a:                               // `z' pressed.
-            SetTextColor(hdc, RGB(255, 0, 255));   // Cyan.
-            TextOut(hdc, xOffset, yOffset, " A ", 3);
-            locked = 1;
-            break;
-          case 0x58:                               // `x' pressed.
-            SetTextColor(hdc, RGB(0, 255, 0));     // Green.
-            TextOut(hdc, xOffset, yOffset, " B ", 3);
-            locked = 1;
-            break;
-          case 0x43:                               // `c' pressed.
-            SetTextColor(hdc, RGB(0, 255, 255));   // Magenta.
-            TextOut(hdc, xOffset, yOffset, " C ", 3);
-            locked = 1;
-            break;
-          case 0x56:                               // `v' pressed.
-            SetTextColor(hdc, RGB(255, 255, 0));   // Yellow.
-            TextOut(hdc, xOffset, yOffset, " D ", 3);
-            locked = 1;
-            break;
-          case 0x42:                               // `b' pressed.
-            SetTextColor(hdc, RGB(0, 0, 255));     // Blue.
-            TextOut(hdc, xOffset, yOffset, " E ", 3);
-            locked = 1;
-            break;
-          case 0x4e:                               // `n' pressed.
-            SetTextColor(hdc, RGB(255, 0, 0));     // Red.
-            TextOut(hdc, xOffset, yOffset, " F ", 3);
-            locked = 1;
-            break;
-          case 0x4d:                               // `m' pressed.
-            SetTextColor(hdc, RGB(255, 255, 255)); // Black.
-            TextOut(hdc, xOffset, yOffset, " G ", 3);
-            locked = 1;
-            break;
-        }//switch
+      if (locked)
         break;
-      default: // for messages that we don't deal with
-        printf("%x %i\n", message, message);
-        return DefWindowProc(hwnd, message, wParam, lParam);
+
+      switch (wParam) { // Now look at the rest of the keystrokes.
+        case 0x5a:                        // `z' pressed.
+          fontColor = RGB(255, 0, 255);   // Cyan.
+          text[1] = 'A';
+          locked = 1;
+          break;
+        case 0x58:                        // `x' pressed.
+          fontColor = RGB(0, 255, 0);     // Green.
+          text[1] = 'B';
+          locked = 1;
+          break;
+        case 0x43:                        // `c' pressed.
+          fontColor = RGB(0, 255, 255);   // Magenta.
+          text[1] = 'C';
+          locked = 1;
+          break;
+        case 0x56:                        // `v' pressed.
+          fontColor = RGB(255, 255, 0);   // Yellow.
+          text[1] = 'D';
+          locked = 1;
+          break;
+        case 0x42:                        // `b' pressed.
+          fontColor = RGB(0, 0, 255);     // Blue.
+          text[1] = 'E';
+          locked = 1;
+          break;
+        case 0x4e:                        // `n' pressed.
+          fontColor = RGB(255, 0, 0);     // Red.
+          text[1] = 'F';
+          locked = 1;
+          break;
+        case 0x4d:                        // `m' pressed.
+          fontColor = RGB(255, 255, 255); // Black.
+          text[1] = 'G';
+          locked = 1;
+          break;
+      }//switch
+      SetTextColor(hdc, fontColor);
+      TextOut(hdc, xOffset, yOffset, text, 3);
+      break;
+    default: // for messages that we don't deal with
+      return DefWindowProc(hwnd, message, wParam, lParam);
   }//switch
 
   return 0;
