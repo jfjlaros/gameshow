@@ -36,9 +36,6 @@ void showButton(void) {
   TextOut(hdc, t_xOffset, t_yOffset, timer, 3);
 }//showButton
 
-void showTimer(void) {
-}//showTimer
-
 // Display the timer on the screen.
 //
 DWORD WINAPI runTimer(LPVOID args) {
@@ -65,6 +62,9 @@ DWORD WINAPI runTimer(LPVOID args) {
 //
 void reset(void) {
   int i;
+
+  while (timer_running)
+    Sleep(1000);
 
   for (i = 0; i < NUMBEROFBUTTONS; i++)
     pressed[i] = 0;
@@ -154,7 +154,8 @@ LRESULT CALLBACK WindowProcedure(HWND hwnd, UINT message, WPARAM wParam,
           reset();            // Reset.
           break;
         case 0x53:            // `s' pressed.
-          locked = 0;         // Serve the next person.
+          if (!timer_running)
+            locked = 0;       // Serve the next person.
           break;
         case 0x5a:            // `z' pressed.
           pressButton(0);     // Button.
@@ -227,7 +228,7 @@ int WINAPI WinMain(HINSTANCE hThisInstance, HINSTANCE hPrevInstance,
   yOffset = (ySize / 2) - (0.5 * fontH);
 
   t_xOffset = (xSize / 4) - (1.0 * fontW);
-  t_yOffset = (ySize / 4) - (0.5 * fontH);
+  t_yOffset = (ySize / 7) - (0.5 * fontH);
 
   reset();
 
